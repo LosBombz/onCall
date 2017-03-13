@@ -17,7 +17,7 @@ console.log('boom');
 // const SCHEDULE_TEXT = 'every Monday at 12:00pm';
 const SCHEDULE_TEXT = 'every 1 sec';
 
-const scheduleInterval = startSchedule(SCHEDULE_TEXT, updateOnCall );
+const scheduleInterval = startSchedule(SCHEDULE_TEXT, updateOnCall);
 
 function startSchedule(scheduleText, callBack) {
     const schedule = later.parse.text(SCHEDULE_TEXT);
