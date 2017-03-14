@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "boom": "^4.2.0",
     "hapi": "^16.1.0",
-    "twilio": "2.11.1",
     "later": "1.2.0",
-    "lodash": "4.17.4"
+    "lodash": "4.17.4",
+    "twilio": "2.11.1"
   }
 }

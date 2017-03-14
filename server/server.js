@@ -3,6 +3,7 @@
 const Hapi = require('hapi');
 const later = require('later');
 const _ = require('lodash');
+const Boom = require('boom');
 
 // Twilio Credentials and configs
 //  TODO: all these id's and phone numbers should be in configs/env vars
@@ -67,18 +68,30 @@ server.route({
         let user = _.find(users, (user) => {
             return user.id === request.params.id;
         });
-        reply(user);
+
+        if(user) {
+            reply(user);
+        } else {
+            reply(Boom.notFound(`user with id {${request.params.id}} not found`));
+        }
+
     }
 });
 
 server.route({
-    method: ['POST, UPDATE'],
-    path: '/users/{id}',
+    method: ['PUT', 'POST'],
+    path: '/users',
     handler: function (request, reply) {
         let user = _.find(users, (user) => {
-            return user.id === request.params.id;
+            return user.id === request.payload.id;
         });
-        reply(user);
+        if(user) {
+            Object.assign(user, request.payload);
+            reply(user);
+        } else {
+            users.push(request.payload);
+            reply(request.payload);
+        }
     }
 });
 
