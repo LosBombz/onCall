@@ -28,19 +28,43 @@ const users = [
         name: 'Carlos Escobar',
         id: 'carlosescobar11488388975927',
         phone: '555-555-5555',
-        phoneFormated: '+15555555555'
+        phoneFormated: '+15555555555',
+        primary: true,
+        backup: false,
+        order: 1
     },
     {
         name: 'Joe the Developer',
         id: 'joethedeveloper1488389103156',
         phone: '555-555-5555',
-        phoneFormated: '+15555555555'
+        phoneFormated: '+15555555555',
+        primary: false,
+        backup: true,
+        order: 2
     },
     {
         name: 'Sam the Developer',
         id: 'samthedeveloper1488389106923',
         phone: '555-555-5555',
-        phoneFormated: '+15555555555'
+        phoneFormated: '+15555555555',
+        primary: false,
+        backup: false,
+        order: 3
+    }
+];
+
+const schedule = [
+    {
+        order: 1,
+        user: 'carlosescobar11488388975927'
+    },
+    {
+        order: 2,
+        user: 'joethedeveloper1488389103156'
+    },
+    {
+        order: 3,
+        user: 'samthedeveloper1488389106923'
     }
 ];
 
