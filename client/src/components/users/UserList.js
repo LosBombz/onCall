@@ -8,20 +8,16 @@ const UserList = ({users}) => {
     return (
 
         <div className="user-list-container panel panel-default">
-            <div>
-                {getUserNodes()}
-            </div>
             <div className="panel-heading">
                 <h2 className="panel-title">On call team</h2>
                 <a href="#" className="user-add-btn">Add team member</a>
             </div>
             <div className="panel-body">
                 <ul className="user-list list-group">
-                    
+                    {getUserNodes()}
                 </ul>
             </div>
         </div>
-
     );
 };
 

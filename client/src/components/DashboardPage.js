@@ -13,7 +13,7 @@ class DashboardPage extends React.Component {
         const {users} = this.props;
         return (
             <div>
-                <h1>My Workouts</h1>
+                <h1>Call Team</h1>
                 <UserList users={users} />
             </div>
         );
