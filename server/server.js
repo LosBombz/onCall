@@ -20,7 +20,16 @@ const SCHEDULE_TEXT = 'every 1 sec';
 const client = require('twilio')(accountSid, authToken);
 
 // create the hapi server
-const server = new Hapi.Server();
+const server = new Hapi.Server({
+        connections: {
+            routes: {
+                cors: {
+                    origin: ['*'],
+
+                }
+            }
+        }
+    });
 server.connection({ port: 1337, host: 'localhost' });
 
 const users = [
@@ -119,6 +128,21 @@ server.route({
     }
 });
 
+// server.register({
+// 	register: require('hapi-cors'),
+// 	options: {
+// 		origins: ['http://localhost:3000']
+// 	}
+// }, function(error){
+//     if (error) {throw error;}
+//     server.start((err) => {
+//
+//         if (err) {
+//             throw err;
+//         }
+//         console.log(`Server running at: ${server.info.uri}`);
+//     });
+// });
 
 server.start((err) => {
 
@@ -127,6 +151,9 @@ server.start((err) => {
     }
     console.log(`Server running at: ${server.info.uri}`);
 });
+
+
+
 
 
 

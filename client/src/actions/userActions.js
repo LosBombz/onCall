@@ -28,11 +28,14 @@ export function loadUsers() {
     return function(dispatch) {
         dispatch(beginAjaxCall());
         return fetch('http://localhost:1337/users', {
-            mode: 'no-cors'
-        }).then((users) =>{
+            mode: 'cors'
+        }).then((response) =>{
+            return response.json();
+        }).then((users)=>{
             console.log(users);
             dispatch(loadUsersSuccess(users));
         }).catch((error) => {
+
             dispatch(ajaxCallError(error));
             throw(error);
         });
