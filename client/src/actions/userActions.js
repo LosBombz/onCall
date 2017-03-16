@@ -1,24 +1,25 @@
 import * as types from './actionTypes';
 import {beginAjaxCall, ajaxCallError} from './ajaxStatusActions';
 
-export function loadUsersSuccess(workouts) {
+
+export function loadUsersSuccess(users) {
     return {
         type: types.LOAD_USERS_SUCCESS,
-        workouts
+        users
     };
 }
 
-export function updateUserSuccess(workout) {
+export function updateUserSuccess(user) {
     return {
         type: types.UPDATE_USER_SUCCESS,
-        workout
+        user
     };
 }
 
-export function createUserSuccess(workout) {
+export function createUserSuccess(user) {
     return {
         type: types.CREATE_USER_SUCCESS,
-        workout
+        user
     };
 }
 
@@ -26,8 +27,11 @@ export function createUserSuccess(workout) {
 export function loadUsers() {
     return function(dispatch) {
         dispatch(beginAjaxCall());
-        return UserApi.getAllUsers().then((workouts) =>{
-            dispatch(loadUsersSuccess(workouts));
+        return fetch('http://localhost:1337/users', {
+            mode: 'no-cors'
+        }).then((users) =>{
+            console.log(users);
+            dispatch(loadUsersSuccess(users));
         }).catch((error) => {
             dispatch(ajaxCallError(error));
             throw(error);
