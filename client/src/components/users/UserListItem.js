@@ -1,30 +1,34 @@
 import React, {PropTypes} from 'react';
 
-function onCallStatus(user) {
-    if(user.primary) {
-        return <span className="on-call on-call-primary">Primary</span>;
-    } else if (user.backup) {
-        return <span className="on-call on-call-backup">Backup</span>;
-    }
+const UserListItem = (props) => {
+    const onCallStatus = (user) => {
+        if(user.primary) {
+            return <span className="on-call on-call-primary">Primary</span>;
+        } else if (user.backup) {
+            return <span className="on-call on-call-backup">Backup</span>;
+        }
 
-    return;
-}
+        return;
+    };
 
-const UserListItem = ({user}) => {
+    const onClick = (e) => {
+        props.onClick(props.user);
+    };
 
     return (
         <li className="user-list-item list-group-item">
-            <span className="badge">{user.order}</span>
-            <h3 className="user-name list-group-item-heading">{user.name}</h3>
+            <span className="badge">{props.user.order}</span>
+            <h3 className="user-name list-group-item-heading">{props.user.name}</h3>
             <span className="user-phone">555-555-5555</span>
-            {onCallStatus(user)}
-            <a href="#" className="user-remove pull-right">Remove user</a>
+            {onCallStatus(props.user)}
+            <a href="#" className="user-remove pull-right" onClick={onClick} >Remove user</a>
         </li>
     );
 };
 
 UserListItem.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired
 };
 
 export default UserListItem;

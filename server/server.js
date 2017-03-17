@@ -32,7 +32,7 @@ const server = new Hapi.Server({
     });
 server.connection({ port: 1337, host: 'localhost' });
 
-const users = [
+let users = [
     {
         name: 'Carlos Escobar',
         id: 'carlosescobar11488388975927',
@@ -124,6 +124,27 @@ server.route({
         } else {
             users.push(request.payload);
             reply(request.payload);
+        }
+    }
+});
+
+server.route({
+    method: 'DELETE',
+    path: '/users',
+    handler: function (request, reply) {
+        let userPayload = JSON.parse(request.payload);
+        let userToDelete = _.find(users, (user) => {
+            return user.id === userPayload.id;
+        });
+        if(userToDelete) {
+            let result = _.reject(users, (user) => {
+                return user.id === userToDelete.id;
+            });
+
+            users = result;
+            reply(userToDelete);
+        } else {
+            reply(Boom.notFound(`user with id {${request.params.id}} not found`));
         }
     }
 });
