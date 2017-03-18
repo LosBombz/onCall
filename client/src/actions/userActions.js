@@ -40,10 +40,8 @@ export function loadUsers() {
         }).then((response) =>{
             return response.json();
         }).then((users)=>{
-            console.log(users);
             dispatch(loadUsersSuccess(users));
         }).catch((error) => {
-
             dispatch(ajaxCallError(error));
             throw(error);
         });
@@ -60,7 +58,6 @@ export function addUser(user) {
         }).then((response) => {
             return response.json();
         }).then((res) => {
-            console.log(res);
             dispatch(createUserSuccess(res));
         }).catch((error) => {
             throw(error);

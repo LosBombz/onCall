@@ -19,7 +19,7 @@ const UserListItem = (props) => {
         <li className="user-list-item list-group-item">
             <span className="badge">{props.user.order}</span>
             <h3 className="user-name list-group-item-heading">{props.user.name}</h3>
-            <span className="user-phone">555-555-5555</span>
+            <span className="user-phone">{props.user.phone}</span>
             {onCallStatus(props.user)}
             <a href="#" className="user-remove pull-right" onClick={onClick} >Remove user</a>
         </li>
