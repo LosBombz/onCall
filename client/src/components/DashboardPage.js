@@ -12,14 +12,14 @@ class DashboardPage extends React.Component {
     render() {
         const {users} = this.props;
         const {actions} = this.props;
-        console.log('ACTIONS', actions);
-        console.log(users);
+
         return (
             <div>
                 <h1>Call Team</h1>
                 <UserList
                     users={users}
                     removeUser={actions.removeUser.bind(this)}
+                    addUser={actions.addUser.bind(this)}
                 />
             </div>
         );

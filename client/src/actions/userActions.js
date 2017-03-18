@@ -61,6 +61,7 @@ export function addUser(user) {
             return response.json();
         }).then((res) => {
             console.log(res);
+            dispatch(createUserSuccess(res));
         }).catch((error) => {
             throw(error);
         });

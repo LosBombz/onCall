@@ -4,6 +4,7 @@ const Hapi = require('hapi');
 const later = require('later');
 const _ = require('lodash');
 const Boom = require('boom');
+const uuid = require('node-uuid');
 
 // Twilio Credentials and configs
 //  TODO: all these id's and phone numbers should be in configs/env vars
@@ -24,18 +25,18 @@ const server = new Hapi.Server({
         connections: {
             routes: {
                 cors: {
-                    origin: ['*'],
-
+                    origin: ['*']
                 }
             }
         }
     });
+
 server.connection({ port: 1337, host: 'localhost' });
 
 let users = [
     {
         name: 'Carlos Escobar',
-        id: 'carlosescobar11488388975927',
+        id: generateId(),
         phone: '555-555-5555',
         phoneFormated: '+15555555555',
         primary: true,
@@ -44,7 +45,7 @@ let users = [
     },
     {
         name: 'Joe the Developer',
-        id: 'joethedeveloper1488389103156',
+        id: generateId(),
         phone: '555-555-5555',
         phoneFormated: '+15555555555',
         primary: false,
@@ -53,7 +54,7 @@ let users = [
     },
     {
         name: 'Sam the Developer',
-        id: 'samthedeveloper1488389106923',
+        id: generateId(),
         phone: '555-555-5555',
         phoneFormated: '+15555555555',
         primary: false,
@@ -115,15 +116,20 @@ server.route({
     method: ['PUT', 'POST'],
     path: '/users',
     handler: function (request, reply) {
+        let userObj = JSON.parse(request.payload);
+
         let user = _.find(users, (user) => {
-            return user.id === request.payload.id;
+            return user.id === userObj.id;
         });
+
         if(user) {
-            Object.assign(user, request.payload);
+            Object.assign(user, userObj);
             reply(user);
         } else {
-            users.push(request.payload);
-            reply(request.payload);
+            userObj.id = generateId();
+
+            users.push(userObj);
+            reply(userObj);
         }
     }
 });
@@ -205,6 +211,10 @@ function notify(message, userNumber) {
         console.log(message);
         console.log(err);
     });
+}
+
+function generateId () {
+    return uuid.v4();
 }
 
 
