@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as userActions from '../actions/userActions';
-import UserList from './users/UserList';
+import UserList from '../components/users/UserList';
 
 class DashboardPage extends React.Component {
     constructor(props, context){
