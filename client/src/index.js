@@ -8,6 +8,7 @@ import {Router, browserHistory} from 'react-router';
 import {loadUsers} from './actions/userActions';
 import routes from './routes';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import './styles/app.scss';
 
 const store = configureStore();
 
