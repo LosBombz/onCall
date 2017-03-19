@@ -4,7 +4,7 @@ const Hapi = require('hapi');
 const later = require('later');
 const _ = require('lodash');
 const Boom = require('boom');
-const uuid = require('node-uuid');
+const generateId = require('./utils/generateId');
 
 // Twilio Credentials and configs
 //  TODO: all these id's and phone numbers should be in configs/env vars
@@ -20,6 +20,8 @@ const SCHEDULE_TEXT = 'every 1 sec';
 //require the Twilio module and create a REST client
 const client = require('twilio')(accountSid, authToken);
 
+let users =  [...require('./mock-db/users')];
+
 // create the hapi server
 const server = new Hapi.Server({
         connections: {
@@ -32,52 +34,6 @@ const server = new Hapi.Server({
     });
 
 server.connection({ port: 1337, host: 'localhost' });
-
-let users = [
-    {
-        name: 'Carlos Escobar',
-        id: generateId(),
-        phone: '555-555-5555',
-        phoneFormated: '+15555555555',
-        primary: true,
-        backup: false,
-        order: 1
-    },
-    {
-        name: 'Joe the Developer',
-        id: generateId(),
-        phone: '555-555-5555',
-        phoneFormated: '+15555555555',
-        primary: false,
-        backup: true,
-        order: 2
-    },
-    {
-        name: 'Sam the Developer',
-        id: generateId(),
-        phone: '555-555-5555',
-        phoneFormated: '+15555555555',
-        primary: false,
-        backup: false,
-        order: 3
-    }
-];
-
-const schedule = [
-    {
-        order: 1,
-        user: 'carlosescobar11488388975927'
-    },
-    {
-        order: 2,
-        user: 'joethedeveloper1488389103156'
-    },
-    {
-        order: 3,
-        user: 'samthedeveloper1488389106923'
-    }
-];
-
 
 server.route({
     method: 'GET',
@@ -212,11 +168,6 @@ function notify(message, userNumber) {
         console.log(err);
     });
 }
-
-function generateId () {
-    return uuid.v4();
-}
-
 
 // these functions are all things I think I'll probably need
 function updateOnCall() {

@@ -88,9 +88,9 @@ class UserList extends React.Component {
                 </div>
                 <div className="panel-body">
                     {this.getUserForm(addUserForm)}
-                    <ul className="user-list list-group">
+                    <ol className="user-list list-group">
                         {this.getUserNodes()}
-                    </ul>
+                    </ol>
                 </div>
             </div>
         );
