@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-// import TopBar from './common/TopBar';
+import NavBar from './common/NavBar';
 // import BottomNavigation from './common/BottomNavigation';
 
 // This is a class-based component because the current
@@ -9,9 +9,8 @@ class App extends React.Component {
   render() {
     return (
         <div className="container-fluid">
-            {/* <TopBar /> */}
+            <NavBar />
             {this.props.children}
-            {/* <BottomNavigation /> */}
         </div>
     );
   }

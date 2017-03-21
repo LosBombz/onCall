@@ -2,9 +2,9 @@
   "name": "rotation-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "hapi": "^16.1.0",
     "later": "1.2.0",
     "lodash": "4.17.4",
+    "node-uuid": "^1.4.7",
     "twilio": "2.11.1"
   }
 }

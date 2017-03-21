@@ -1,4 +1,4 @@
-import * as types from './actionTypes';
+import * as types from '../constants/actionTypes';
 import {beginAjaxCall, ajaxCallError} from './ajaxStatusActions';
 
 
@@ -23,17 +23,61 @@ export function createUserSuccess(user) {
     };
 }
 
+export function deleteUserSuccess(user) {
+    return {
+        type: types.DELETE_USER_SUCCESS,
+        user
+    };
+}
+
 // thunks
 export function loadUsers() {
     return function(dispatch) {
         dispatch(beginAjaxCall());
         return fetch('http://localhost:1337/users', {
-            mode: 'no-cors'
-        }).then((users) =>{
-            console.log(users);
+            method: 'GET',
+            mode: 'cors'
+        }).then((response) =>{
+            return response.json();
+        }).then((users)=>{
             dispatch(loadUsersSuccess(users));
         }).catch((error) => {
             dispatch(ajaxCallError(error));
+            throw(error);
+        });
+    };
+}
+
+export function addUser(user) {
+    return function(dispatch) {
+        dispatch(beginAjaxCall());
+        return fetch('http://localhost:1337/users', {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify(user)
+        }).then((response) => {
+            return response.json();
+        }).then((res) => {
+            dispatch(createUserSuccess(res));
+        }).catch((error) => {
+            throw(error);
+        });
+    };
+}
+
+export function removeUser(user) {
+    return function(dispatch) {
+        dispatch(beginAjaxCall());
+        return fetch('http://localhost:1337/users', {
+            method: 'DELETE',
+            mode: 'cors',
+            body: JSON.stringify(user)
+        }).then((response) => {
+            return response.json();
+        }).then((res) => {
+            dispatch(deleteUserSuccess(res));
+            dispatch(loadUsers());
+        }).catch((error) => {
             throw(error);
         });
     };
