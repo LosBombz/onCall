@@ -76,6 +76,7 @@ export function removeUser(user) {
             return response.json();
         }).then((res) => {
             dispatch(deleteUserSuccess(res));
+            dispatch(loadUsers());
         }).catch((error) => {
             throw(error);
         });

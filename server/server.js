@@ -1,24 +1,12 @@
 'use strict';
 
 const Hapi = require('hapi');
-const later = require('later');
 const _ = require('lodash');
 const Boom = require('boom');
+const config = require('./config');
 const generateId = require('./utils/generateId');
-
-// Twilio Credentials and configs
-//  TODO: all these id's and phone numbers should be in configs/env vars
-const accountSid = 'ACcf879ae1f3f137d3d69338409cdeb851';
-const authToken = 'a5d7215fab103ce490398df2f503005b';
-// const testPhone = '+16174597041';
-const TWILIO_PHONE = '+16175531502';
-
-// scheduling configs
-// const SCHEDULE_TEXT = 'every Monday at 12:00pm';
-const SCHEDULE_TEXT = 'every 1 sec';
-
-//require the Twilio module and create a REST client
-const client = require('twilio')(accountSid, authToken);
+const schedule = require('./schedule');
+const messaging = require('./messaging');
 
 let users =  [...require('./mock-db/users')];
 
@@ -33,13 +21,16 @@ const server = new Hapi.Server({
         }
     });
 
-server.connection({ port: 1337, host: 'localhost' });
+server.connection({
+    port: config.server.port,
+    host: config.server.host
+});
 
 server.route({
     method: 'GET',
     path: '/',
     handler: function (request, reply) {
-        reply('Hello, world!');
+        reply('');
     }
 });
 
@@ -72,6 +63,14 @@ server.route({
     method: ['PUT', 'POST'],
     path: '/users',
     handler: function (request, reply) {
+        let newUser = {
+            name: '',
+            phone: null,
+            phoneFormated: null,
+            primary: false,
+            backup: false,
+            order: 0
+        }
         let userObj = JSON.parse(request.payload);
 
         let user = _.find(users, (user) => {
@@ -82,10 +81,24 @@ server.route({
             Object.assign(user, userObj);
             reply(user);
         } else {
-            userObj.id = generateId();
+            Object.assign(newUser, userObj);
 
-            users.push(userObj);
-            reply(userObj);
+            newUser.id = generateId();
+
+            newUser.order = getNewUserOrder(users);
+
+            if(users.length === 0) {
+                newUser.primary = true;
+                messaging.notify(`${users[0].name} is now`, newUser);
+            }
+            if(users.length === 1) {
+                newUser.backup = true;
+                messaging.notify(`${users[1].name} is now`, newUser);
+            }
+
+            users.push(newUser);
+
+            reply(newUser);
         }
     }
 });
@@ -104,28 +117,34 @@ server.route({
             });
 
             users = result;
-            reply(userToDelete);
+
+            reAssignUserOrders(users);
+
+            if(userToDelete.primary && users.length > 1) {
+                users[0].primary = true;
+                users[0].backup = false;
+                users[1].backup = true;
+                messaging.notify(`${userToDelete.name} is no longer`, userToDelete);
+                messaging.notify(`${users[0].name} is now`, users[0]);
+                messaging.notify(`${users[1].name} is now`, users[1]);
+            } else if(users.length === 1 && !users[0].primary){
+                users[0].primary = true;
+                users[0].backup = false;
+                messaging.notify(`${users[0].name} is now`, users[0]);
+            }
+
+            if(userToDelete.backup && users.length > 1) {
+                users[1].backup = true;
+                messaging.notify(`${userToDelete.name} is no longer`, userToDelete);
+                messaging.notify(`${users[1].name} is now`, users[1]);
+            }
+
+            reply(users);
         } else {
             reply(Boom.notFound(`user with id {${request.params.id}} not found`));
         }
     }
 });
-
-// server.register({
-// 	register: require('hapi-cors'),
-// 	options: {
-// 		origins: ['http://localhost:3000']
-// 	}
-// }, function(error){
-//     if (error) {throw error;}
-//     server.start((err) => {
-//
-//         if (err) {
-//             throw err;
-//         }
-//         console.log(`Server running at: ${server.info.uri}`);
-//     });
-// });
 
 server.start((err) => {
 
@@ -133,59 +152,65 @@ server.start((err) => {
         throw err;
     }
     console.log(`Server running at: ${server.info.uri}`);
+
+    schedule.startSchedule(config.SCHEDULE_TEXT, users, updateOnCall);
 });
 
+// set a new users order to the end of the list
+function getNewUserOrder(users) {
+    let orderMax = users.length;
 
-
-
-
-
-// set schedule
-const scheduleInterval = startSchedule(SCHEDULE_TEXT, updateOnCall);
-
-/**
- * Will Kick off a schedule and run a call back when the schedule runs
- */
-function startSchedule(scheduleText, callBack) {
-    const schedule = later.parse.text(SCHEDULE_TEXT);
-
-    return later.setTimeout(() => {
-            callBack();
-        }, schedule);
+    return  orderMax + 1;
 }
 
-/**
- * Will send a twilio sms notification 'currently only works with 2 numbers'
- */
-function notify(message, userNumber) {
-    console.log(message, userNumber);
-    client.messages.create({
-        to: userNumber,
-        from: TWILIO_PHONE,
-        body: 'you are now primary on call',
-    }, function(err, message) {
-        console.log(message);
-        console.log(err);
-    });
+function reAssignUserOrders(users) {
+    users.map((user, idx) => {return user.order = idx + 1});
+}
+
+function getUserOrder(users) {
+
 }
 
 // these functions are all things I think I'll probably need
-function updateOnCall() {
+function updateOnCall(users) {
+    let currentPrimaryUser = getPrimaryOnCall(users);
+
+    messaging.notify(`${currentPrimaryUser.name} is no longer`, currentPrimaryUser);
+
+    currentPrimaryUser.primary = false;
+    users.splice(0, 1);
+    users.push(currentPrimaryUser);
+    reAssignUserOrders(users);
+    messaging.notify(`${users[0].name} is no longer`, users[0]);
+
+
+    users[0].backup = false;
+    users[0].primary = true;
+
+    messaging.notify(`${users[0].name} is now`, users[0]);
+
+    users[1].backup = true;
+
+    messaging.notify(`${users[1].name} is now`, users[1]);
 
 }
 
-function setPrimaryOnCall(user) {
 
-}
 
-function setBackupOnCall(user) {
 
-}
 
 function getPrimaryOnCall(users) {
+    let currentPrimaryUser = _.find(users, (user) => {
+        return user.primary === true;
+    });
 
+    return currentPrimaryUser;
 }
 
 function getBackupOnCall(users) {
+    let currentBackupUser = _.find(users, (user) => {
+        return user.backup === true;
+    });
 
+    return currentBackupUser;
 }
