@@ -6,10 +6,12 @@
 * When on calls change they get an alert
 * Add, edit (currently no edit), remove users
 ## Get Started
-1. in the `server` directory run `npm install`
-2. still in `server` run `node server.js`
-3. in the `client` directory run `npm install`
-4. still in `client` run `npm start`, this will build the project in `dev` environment and open a new browser window
+In the command line:
+1. in the `/server` directory run `npm install`
+2. still in `/server` run `npm start`
+3. in the `/client` directory run `npm install`
+4. still in `/client` run `npm start`, this will build the project in `dev` environment and open a new browser window
+5. the scheduling frequency is set in `/server/config.js`
 
 ## Technologies/Libraries
 * Hapi.js for node server - [Hapi](https://hapijs.com/)
