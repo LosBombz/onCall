@@ -4,8 +4,8 @@ module.exports = [
     {
         name: 'Carlos Escobar',
         id: generateId(),
-        phone: '617-459-7041',
-        phoneFormatted: '+16174597041',
+        phone: '555-555-5555',
+        phoneFormatted: '+15555555555',
         primary: true,
         backup: false,
         order: 1
