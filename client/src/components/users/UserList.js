@@ -69,10 +69,10 @@ class UserList extends React.Component {
         const addUserForm = (
             <form className="form" onSubmit={this.handleFormSubmit.bind(this)}>
                 <div className="form-group">
-                    <input type="text" placeholder="name" name="newUserName" className="form-control" value={this.state.newUserName} onChange={this.handleFormChange.bind(this)}/>
+                    <input required type="text" placeholder="name" name="newUserName" className="form-control" value={this.state.newUserName} onChange={this.handleFormChange.bind(this)}/>
                 </div>
                 <div className="form-group">
-                    <input type="phone" placeholder="phone" name="newUserNumber" className="form-control" value={this.state.newUserNumber} onChange={this.handleFormChange.bind(this)} />
+                    <input required type="phone" placeholder="phone" name="newUserNumber" className="form-control" value={this.state.newUserNumber} onChange={this.handleFormChange.bind(this)} />
                 </div>
                 <div className="form-group">
                     <button className="btn btn-primary">Save</button>

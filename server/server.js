@@ -44,6 +44,16 @@ server.route({
 
 server.route({
     method: 'GET',
+    path: '/schedule',
+    handler: function (request, reply) {
+        let schedule = {schedule: config.SCHEDULE_TEXT};
+
+        reply(schedule);
+    }
+});
+
+server.route({
+    method: 'GET',
     path: '/users/{id}',
     handler: function (request, reply) {
         let user = _.find(users, (user) => {
@@ -66,7 +76,7 @@ server.route({
         let newUser = {
             name: '',
             phone: null,
-            phoneFormated: null,
+            phoneFormatted: null,
             primary: false,
             backup: false,
             order: 0
@@ -84,8 +94,8 @@ server.route({
             Object.assign(newUser, userObj);
 
             newUser.id = generateId();
-
             newUser.order = getNewUserOrder(users);
+            newUser.phoneFormatted = formatPhone(newUser.phone);
 
             if(users.length === 0) {
                 newUser.primary = true;
@@ -156,6 +166,7 @@ server.start((err) => {
     schedule.startSchedule(config.SCHEDULE_TEXT, users, updateOnCall);
 });
 
+
 // set a new users order to the end of the list
 function getNewUserOrder(users) {
     let orderMax = users.length;
@@ -163,15 +174,13 @@ function getNewUserOrder(users) {
     return  orderMax + 1;
 }
 
+
 function reAssignUserOrders(users) {
     users.map((user, idx) => {return user.order = idx + 1});
 }
 
-function getUserOrder(users) {
 
-}
-
-// these functions are all things I think I'll probably need
+// method for rotation update on schedule change
 function updateOnCall(users) {
     let currentPrimaryUser = getPrimaryOnCall(users);
 
@@ -196,9 +205,6 @@ function updateOnCall(users) {
 }
 
 
-
-
-
 function getPrimaryOnCall(users) {
     let currentPrimaryUser = _.find(users, (user) => {
         return user.primary === true;
@@ -207,10 +213,17 @@ function getPrimaryOnCall(users) {
     return currentPrimaryUser;
 }
 
+
 function getBackupOnCall(users) {
     let currentBackupUser = _.find(users, (user) => {
         return user.backup === true;
     });
 
     return currentBackupUser;
+}
+
+function formatPhone(phone) {
+    let phoneClean = phone.replace(/\D/g, '');
+
+    return `+1${phoneClean}`;
 }
