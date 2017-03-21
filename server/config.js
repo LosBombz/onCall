@@ -8,10 +8,10 @@ module.exports = {
     // scheduling configs
     // runs the schedule every monday at 12:00pm
     // https://bunkat.github.io/later
-    // SCHEDULE_TEXT : 'every Monday at 12:00pm',
+    SCHEDULE_TEXT : 'every Monday at 12:00pm',
 
     // uncomment this line to see the scheduling fire more often
-    SCHEDULE_TEXT : 'every 5 sec',
+    // SCHEDULE_TEXT : 'every 5 sec',
     server: {
         port: 1337,
         host: 'localhost'

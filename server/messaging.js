@@ -16,7 +16,7 @@ function notify(message, user) {
         from: config.TWILIO_PHONE,
         body: `${message} ${onCallStatus} onCall`,
     }, function(err, message) {
-        console.log(message);
+        console.log(message.body);
         console.log(err);
     });
 }
